@@ -59,3 +59,26 @@ Currently, `toTree` seems to only include in the returned tree the last occuring
   }
 }`. In this specific example, I might be able to mitigate the problem by using the `params` prop of the errors to specify the concrete fields that violate the rules.
 But, are there cases where multiple validation errors are possible for one and the same `instancePath`?
+
+# Multiple errors on the same path
+A case like this seems to be possible: `[
+    {
+        instancePath: '/obj',
+        keyword: 'required',
+        params: {missingProperty: 'a'}
+    },
+    {
+        instancePath: '/obj',
+        keyword: 'maxProperties',
+        params: {limit: 2}
+    }
+]`. Here, the first error would be at `{
+    obj: {a: {data: {keyword: 'required', ...}, ...}}
+}`, and the second would be `{
+    obj: {data: {keyword: 'maxProperties', ...}, ...}
+}`. To handle a case like this, the format could be: `{
+    obj: {
+        errors: [{data: {keyword: 'maxProperties', ...}, ...}],
+        node: {a: {data: {keyword: 'maxProperties', ...}, ...}}
+    }
+}`. This format could also handle multiple errors for a sigle `instancePath`.
