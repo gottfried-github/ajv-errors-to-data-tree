@@ -59,6 +59,10 @@ Currently, `toTree` seems to only include in the returned tree the last occuring
   }
 }`. In this specific example, I might be able to mitigate the problem by using the `params` prop of the errors to specify the concrete fields that violate the rules.
 But, are there cases where multiple validation errors are possible for one and the same `instancePath`?
+1. Multiple errors with the same `instancePath` but keywords for different types aren't possible.
+2. Within one and the same type, multiple errors with different keywords are possible in (at least) these cases:
+    1. For type `object`:
+        1. Both `minProperties` and `maxProperties` can be present together with the other keywords (but not one together with the other).
 
 # Multiple errors on the same path
 A case like this seems to be possible: `[
