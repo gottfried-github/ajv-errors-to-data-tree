@@ -57,4 +57,36 @@ function toTree(errors) {
     return fields
 }
 
-module.exports = {toTree}
+/**
+    @param {Object} root
+    @param {Array} path in descending order (from ancsetors to descendants)
+*/
+function mergePath(root, path) {
+    let _root = root
+
+    for (const node of path) {
+        if (node.name in _root) {
+            _root = _root[node.name]; continue
+        }
+
+        _root[node.name] = node.node
+        _root = _root[node.name]
+    }
+
+    return root
+}
+
+function mergePathDemo00() {
+    const root = mergePath({a: {b: {c: {v: 'c'}}}}, [{name: 'a', node: {name: 'b', node: {name: 'd', node: {v: 'd'}}}}, {name: 'b', node: {name: 'd', node: {v: 'd'}}}, {name: 'd', node: {v: 'd'}}])
+    // root should be:
+    // {
+    //     a: {
+    //         b: {
+    //             c: {v: 'c'},
+    //             d: {v: 'd'}
+    //         }
+    //     }
+    // }
+}
+
+module.exports = {toTree, mergePath}
