@@ -2,7 +2,7 @@ function toTree(errors) {
     const fields = {}
     for (const e of errors) {
         const nodeNames = e.instancePath.split('/').filter(v => !!v.length)
-        const nodes = namesToNodes(nodeNames)
+        const nodes = namesToNodes(nodeNames, e)
         const nodesLinked = linkNodes([...nodes].reverse())
 
         console.log("toTree, nodesLinked:", nodesLinked);
@@ -14,18 +14,18 @@ function toTree(errors) {
     return fields
 }
 
-function namesToNodes(names) {
-    return names.map(name => {
+function namesToNodes(names, data) {
+    return names.map((name, i) => {
         if (!isNaN(Number(name))) {
             return {
                 index: Number(name),
-                node: 0 === names.length
-                    ? {message: e.message || null, data: e}
+                node: names.length-1 === i // 0 === names.length
+                    ? {message: data.message || null, data: data}
                     : {}
             }
         } else {
-            if (0 === names.length) {
-                return {name: name, node: {message: e.message || null, data: e}}
+            if (names.length-1 === i) {
+                return {name: name, node: {message: data.message || null, data: data}}
             } else {
                 return {name: name, node: {}}
             }
