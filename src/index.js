@@ -65,15 +65,16 @@ function mergePath(root, path) {
     let _root = root
 
     for (const node of path) {
+        console.log("mergePath - node, path, _root:", node, path, _root);
         if ('index' in node) {
             if (!Array.isArray(_root)) throw new Error("an array item must fit into an array")
 
             if (_root.find(_node => node.index === _node.index)) {
-                _root = _root.find(_node => node.index === _node.index); continue
+                _root = _root.find(_node => node.index === _node.index).node; continue
             }
 
             _root.push(node)
-            _root = node
+            _root = node.node
             continue
         }
 
@@ -107,7 +108,7 @@ function mergePathDemo01() {
     const path = [{name: 'a', node: [{index: 0, node: {d: {v: 'd'}}}]}, {index: 0, node: {d: {v: 'd'}}}, {name: 'd', node: {v: 'd'}}]
 
     const root = mergePath(_root, path)
-    
+
     // root should be:
     // {
     //     a: [
