@@ -1,6 +1,7 @@
 const {mergePath} = require('../src/index')
 
-function mergePathDemo00() {
+function namedNodes() {
+    // /a/b/c, /a/b/d
     const root = mergePath({a: {b: {c: {v: 'c'}}}}, [{name: 'a', node: {name: 'b', node: {name: 'd', node: {v: 'd'}}}}, {name: 'b', node: {name: 'd', node: {v: 'd'}}}, {name: 'd', node: {v: 'd'}}])
     // root should be:
     // {
@@ -13,7 +14,7 @@ function mergePathDemo00() {
     // }
 }
 
-function mergePathDemo01() {
+function arrayItemSingleLevel() {
     // /a/0/c, /a/0/d
     const _root = {a: [{index: 0, node: {c: {v: 'c'}}}]}
     const path = [{name: 'a', node: [{index: 0, node: {d: {v: 'd'}}}]}, {index: 0, node: {d: {v: 'd'}}}, {name: 'd', node: {v: 'd'}}]
@@ -33,7 +34,7 @@ function mergePathDemo01() {
     return root
 }
 
-function mergePathDemo02() {
+function arrayItemMultipleLevels() {
     // /a/0/0/b, /a/0/0/c
     const _root = {a: [{index: 0, node: [{index: 0, node: {b: {v: 'b'}}}]}]}
     const path = [{name: 'a', node: [{index: 0, node: [{index: 0, node: {name: 'c', node: {v: 'c'}}}]}]}, {index: 0, node: [{index: 0, node: {name: 'c', node: {v: 'c'}}}]}, {index: 0, node: {name: 'c', node: {v: 'c'}}}, {name: 'c', node: {v: 'c'}}]
@@ -57,7 +58,7 @@ function mergePathDemo02() {
     return root
 }
 
-function mergePathDemo03() {
+function invalidInput() {
     // /a/0/0/b, /a/0/0/c
     const _root = {a: [{index: 0, node: [{index: 0, node: {v: 'b'}}]}]}
     const path = [{name: 'a', node: [{index: 0, node: [{index: 0, node: {v: 'c'}}]}]}, {index: 0, node: [{index: 0, node: {v: 'c'}}]}, {index: 0, node: {v: 'c'}}]
@@ -79,5 +80,6 @@ function mergePathDemo03() {
 }
 
 module.exports = {
-    mergePathDemo00, mergePathDemo01, mergePathDemo02, mergePathDemo03
+    namedNodes, arrayItemSingleLevel, arrayItemMultipleLevels,
+    invalidInput
 }
