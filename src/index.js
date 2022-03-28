@@ -2,59 +2,64 @@ function toTree(errors) {
     const fields = {}
     for (const e of errors) {
         const nodeNames = e.instancePath.split('/').filter(v => !!v.length)
-        const nodes = []
+        const nodes = namesToNodes(nodeNames)
+        const nodesLinked = linkNodes([...nodes].reverse())
 
-        while (nodeNames.length) {
-            const nodeName = nodeNames.shift()
-            if (!isNaN(Number(nodeName))) {
-                nodes.unshift({
-                    index: Number(nodeName),
-                    node: 0 === nodeNames.length
-                        ? {message: e.message || null, data: e}
-                        : {}
-                })
+        console.log("toTree, nodesLinked:", nodesLinked);
+        nodesLinked.reverse()
 
-            } else {
-                if (0 === nodeNames.length) {
-                    nodes.unshift({name: nodeName, node: {message: e.message || null, data: e}})
-                } else {
-                    nodes.unshift({name: nodeName, node: {}})
-                }
-            }
-        }
-
-        nodes.forEach((node, i) => {
-            console.log("hierarchicalAjvToValidationErrors, nodes iteration - i, node, nodes", i, node, nodes);
-
-            if ('index' in node) {
-                if (nodes.length-1 === i) throw new Error("an array item node can't be a root node")
-
-                if (!Array.isArray(nodes[i+1].node)) {
-                    nodes[i+1].node = []
-                }
-
-                nodes[i+1].node.push(node)
-            }
-
-            if (node.name) {
-                if (nodes.length-1 === i) {
-                    fields[node.name] = node.node
-                    return
-                }
-
-                nodes[i+1].node[node.name] = node.node
-            }
-
-            if (nodes.length-1 === i) {
-                if (node.index) throw new Error()
-                fields[node.name] = node.node
-
-                return
-            }
-        })
+        fields[nodesLinked[0].name] = nodesLinked[0].node
     }
 
     return fields
+}
+
+function namesToNodes(names) {
+    return names.map(name => {
+        if (!isNaN(Number(name))) {
+            return {
+                index: Number(name),
+                node: 0 === names.length
+                    ? {message: e.message || null, data: e}
+                    : {}
+            }
+        } else {
+            if (0 === names.length) {
+                return {name: name, node: {message: e.message || null, data: e}}
+            } else {
+                return {name: name, node: {}}
+            }
+        }
+    })
+}
+
+function linkNodes(nodes) {
+    for (const [i, node] of nodes.entries()) {
+        if ('index' in node) {
+            if (nodes.length-1 === i) throw new Error("an array item node can't be a root node")
+
+            if (!Array.isArray(nodes[i+1].node)) {
+                nodes[i+1].node = []
+            }
+
+            nodes[i+1].node.push(node)
+        }
+
+        if (node.name) {
+            if (nodes.length-1 === i) {
+                continue
+            }
+
+            nodes[i+1].node[node.name] = node.node
+        }
+
+        if (nodes.length-1 === i) {
+            if (node.index) throw new Error()
+            continue
+        }
+    }
+
+    return nodes
 }
 
 /**
@@ -90,5 +95,7 @@ function mergePath(root, path) {
 }
 
 module.exports = {
-    toTree, mergePath,
+    toTree,
+    namesToNodes, linkNodes,
+    mergePath,
 }
