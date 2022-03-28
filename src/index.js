@@ -8,7 +8,7 @@ function toTree(errors) {
         console.log("toTree, nodesLinked:", nodesLinked);
         nodesLinked.reverse()
 
-        fields[nodesLinked[0].name] = nodesLinked[0].node
+        fields[nodesLinked[0].name] = nodesLinked[0]
     }
 
     return fields
@@ -50,7 +50,7 @@ function linkNodes(nodes) {
                 continue
             }
 
-            nodes[i+1].node[node.name] = node.node
+            nodes[i+1].node[node.name] = node
         }
 
         if (nodes.length-1 === i) {
