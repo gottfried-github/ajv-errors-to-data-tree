@@ -122,7 +122,31 @@ function mergePathDemo01() {
     return root
 }
 
+function mergePathDemo02() {
+    // /a/0/0/b, /a/0/0/c
+    const _root = {a: [{index: 0, node: [{index: 0, node: {b: {v: 'b'}}}]}]}
+    const path = [{name: 'a', node: [{index: 0, node: [{index: 0, node: {name: 'c', node: {v: 'c'}}}]}]}, {index: 0, node: [{index: 0, node: {name: 'c', node: {v: 'c'}}}]}, {index: 0, node: {name: 'c', node: {v: 'c'}}}, {name: 'c', node: {v: 'c'}}]
+
+    const root = mergePath(_root, path)
+
+    // root should be:
+    // {
+    //     a: [{
+    //             index: 0,
+    //             node: [{
+    //                 index: 0,
+    //                 node: {
+    //                     b: {v: 'b'},
+    //                     c: {v: 'c'}
+    //                 }
+    //             }]
+    //     }]
+    // }
+
+    return root
+}
+
 module.exports = {
     toTree, mergePath,
-    mergePathDemo00, mergePathDemo01
+    mergePathDemo00, mergePathDemo01, mergePathDemo02
 }
