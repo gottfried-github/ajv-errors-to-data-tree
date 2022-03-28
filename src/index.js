@@ -65,6 +65,18 @@ function mergePath(root, path) {
     let _root = root
 
     for (const node of path) {
+        if ('index' in node) {
+            if (!Array.isArray(_root)) throw new Error("an array item must fit into an array")
+
+            if (_root.find(_node => node.index === _node.index)) {
+                _root = _root.find(_node => node.index === _node.index); continue
+            }
+
+            _root.push(node)
+            _root = node
+            continue
+        }
+
         if (node.name in _root) {
             _root = _root[node.name]; continue
         }
@@ -89,4 +101,27 @@ function mergePathDemo00() {
     // }
 }
 
-module.exports = {toTree, mergePath}
+function mergePathDemo01() {
+    // /a/0/c, /a/0/d
+    const _root = {a: [{index: 0, node: {c: {v: 'c'}}}]}
+    const path = [{name: 'a', node: [{index: 0, node: {d: {v: 'd'}}}]}, {index: 0, node: {d: {v: 'd'}}}, {name: 'd', node: {v: 'd'}}]
+
+    const root = mergePath(_root, path)
+    
+    // root should be:
+    // {
+    //     a: [
+    //         {index: 0, node: {
+    //             c: {v: 'c'},
+    //             d: {v: 'd'}
+    //         }}
+    //     ]
+    // }
+
+    return root
+}
+
+module.exports = {
+    toTree, mergePath,
+    mergePathDemo00, mergePathDemo01
+}
