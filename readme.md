@@ -86,3 +86,10 @@ A case like this seems to be possible: `[
         node: {a: {data: {keyword: 'maxProperties', ...}, ...}}
     }
 }`. This format could also handle multiple errors for a sigle `instancePath`.
+
+# Merging paths
+Consider these paths: `/a/b/c/`, `/a/b/d/e`, `/a/b/f`. Each of them specify nodes of the `b` node. (Here are some more examples with array items: `/a/0/b`, `/a/0/c/d`, `/a/0/e`).
+In the algorithm, I go through each of the paths and turn them into objects. So, going through `/a/b/c/` will result in `{a: {b: {c: {}}}}`. Going through `/a/b/d/e` will produce `{a: {b: {d: {e: {}}}}}`. At the moment, the algorithm works in a way that will overwrite the former by the latter (if the former is processed before the latter): it will overwrite the `{b: {c: {}}}` in the former by the `{b: {d: {e: {}}}}` in the latter. However, the desired result would be this: `{a: {b: {
+    c: {},
+    d: {e: {}}
+}}}` - i.e., the merger of the two paths.

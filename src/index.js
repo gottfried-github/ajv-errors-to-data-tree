@@ -57,4 +57,38 @@ function toTree(errors) {
     return fields
 }
 
-module.exports = {toTree}
+/**
+    @param {Object} root
+    @param {Array} path in descending order (from ancsetors to descendants)
+*/
+function mergePath(root, path) {
+    let _root = root
+
+    for (const node of path) {
+        console.log("mergePath - node, path, _root:", node, path, _root);
+        if ('index' in node) {
+            if (!Array.isArray(_root)) throw new Error("an array item must fit into an array")
+
+            if (_root.find(_node => node.index === _node.index)) {
+                _root = _root.find(_node => node.index === _node.index).node; continue
+            }
+
+            _root.push(node)
+            _root = node.node
+            continue
+        }
+
+        if (node.name in _root) {
+            _root = _root[node.name]; continue
+        }
+
+        _root[node.name] = node.node
+        _root = _root[node.name]
+    }
+
+    return root
+}
+
+module.exports = {
+    toTree, mergePath,
+}
