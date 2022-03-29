@@ -2,7 +2,9 @@ function toTree(errors) {
     let fields = {}
     for (const e of errors) {
         const nodeNames = e.instancePath.split('/').filter(v => !!v.length)
-        const nodes = namesToNodes(nodeNames, e)
+        const nodes = nodeNames.map((name, i) => {
+            return nameToNode(name, e, nodeNames.length-1 === i)
+        })
 
         fields = mergePath(fields, createArrayNodes(nodes))
     }
@@ -10,23 +12,21 @@ function toTree(errors) {
     return fields
 }
 
-function namesToNodes(names, data) {
-    return names.map((name, i) => {
-        if (!isNaN(Number(name))) {
-            return {
-                index: Number(name),
-                node: names.length-1 === i
-                    ? {message: data.message || null, data: data}
-                    : {}
-            }
-        } else {
-            if (names.length-1 === i) {
-                return {name: name, node: {message: data.message || null, data: data}}
-            } else {
-                return {name: name, node: {}}
-            }
+function nameToNode(name, data, isTerminal) {
+    if (!isNaN(Number(name))) {
+        return {
+            index: Number(name),
+            node: isTerminal
+                ? {message: data.message || null, data: data}
+                : {}
         }
-    })
+    } else {
+        if (isTerminal) {
+            return {name: name, node: {message: data.message || null, data: data}}
+        } else {
+            return {name: name, node: {}}
+        }
+    }
 }
 
 function createArrayNodes(nodes) {
@@ -76,6 +76,5 @@ function mergePath(root, path) {
 
 module.exports = {
     toTree,
-    namesToNodes, linkNodes,
     mergePath,
 }
