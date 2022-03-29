@@ -51,6 +51,26 @@ function mergePathsWithArrItems() {
     return tree
 }
 
+function paramsToTree() {
+    const errors = [
+        {
+            instancePath: "/a/b",
+            params: {
+                missingProperty: "c"
+            }
+        },
+        {
+            instancePath: "/a/b/d"
+        }
+    ]
+
+    const tree = toTree(errors)
+
+    console.log("mergePathsOfNamedNodes, tree", tree);
+
+    return tree
+}
+
 module.exports = {
-    mergePathsOfNamedNodes, mergePathsWithArrItem, mergePathsWithArrItems,
+    mergePathsOfNamedNodes, mergePathsWithArrItem, mergePathsWithArrItems, paramsToTree
 }

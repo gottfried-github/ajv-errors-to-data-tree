@@ -2,9 +2,23 @@ function toTree(errors) {
     let fields = {}
     for (const e of errors) {
         const nodeNames = e.instancePath.split('/').filter(v => !!v.length)
-        const nodes = nodeNames.map((name, i) => {
-            return nameToNode(name, e, nodeNames.length-1 === i)
-        })
+        let nodes = nodeNames.reduce((_nodes, name, i) => {
+            const isTerminal = nodeNames.length-1 === i
+            if (!isTerminal) {
+                _nodes.push(nameToNode(name, e, isTerminal))
+                return _nodes
+            }
+
+            const prop = ['missingProperty', 'additionalProperty', 'propertyName'].find(k => e.params && k in e.params)
+            if (!prop) {
+                _nodes.push(nameToNode(name, e, isTerminal))
+                return _nodes
+            }
+
+            _nodes.push(nameToNode(name, null, false))
+            _nodes.push(nameToNode(e.params[prop], e, true))
+            return _nodes
+        }, [])
 
         fields = mergePath(fields, createArrayNodes(nodes))
     }
