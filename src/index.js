@@ -1,14 +1,10 @@
 function toTree(errors) {
-    const fields = {}
+    let fields = {}
     for (const e of errors) {
         const nodeNames = e.instancePath.split('/').filter(v => !!v.length)
         const nodes = namesToNodes(nodeNames, e)
-        const nodesLinked = linkNodes([...nodes].reverse())
 
-        console.log("toTree, nodesLinked:", nodesLinked);
-        nodesLinked.reverse()
-
-        fields[nodesLinked[0].name] = nodesLinked[0]
+        fields = mergePath(fields, createArrayNodes(nodes))
     }
 
     return fields
@@ -19,7 +15,7 @@ function namesToNodes(names, data) {
         if (!isNaN(Number(name))) {
             return {
                 index: Number(name),
-                node: names.length-1 === i // 0 === names.length
+                node: names.length-1 === i
                     ? {message: data.message || null, data: data}
                     : {}
             }
@@ -33,29 +29,13 @@ function namesToNodes(names, data) {
     })
 }
 
-function linkNodes(nodes) {
+function createArrayNodes(nodes) {
     for (const [i, node] of nodes.entries()) {
+
         if ('index' in node) {
-            if (nodes.length-1 === i) throw new Error("an array item node can't be a root node")
+            if (0 === i) continue
 
-            if (!Array.isArray(nodes[i+1].node)) {
-                nodes[i+1].node = []
-            }
-
-            nodes[i+1].node.push(node)
-        }
-
-        if (node.name) {
-            if (nodes.length-1 === i) {
-                continue
-            }
-
-            nodes[i+1].node[node.name] = node
-        }
-
-        if (nodes.length-1 === i) {
-            if (node.index) throw new Error()
-            continue
+            nodes[i-1].node = []
         }
     }
 
