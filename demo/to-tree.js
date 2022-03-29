@@ -1,4 +1,4 @@
-const {toTree} = require('../index')
+const {toTree} = require('../src/index')
 
 function mergePathsOfNamedNodes() {
     const errors = [
