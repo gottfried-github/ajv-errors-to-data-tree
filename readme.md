@@ -30,6 +30,9 @@
         }]
     }`
 
+# JSON schema standard
+This code handles errors for the `draft-7` standard. For example, in the latest standard, there's no `additionalProperties` keyword, whereas it's present in the `draft-7` spec.
+
 # Multiple errors with the same `instancePath`
 Currently, `toTree` seems to only include in the returned tree the last occuring error of those with the same `instancePath` in the given array of errors. For example, with these errors: `[
     {
