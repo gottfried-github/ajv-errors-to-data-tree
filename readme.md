@@ -112,8 +112,8 @@ But, are there cases where multiple validation errors are possible for one and t
         ],
         node: null
     }
-}`
-
+}`.
+The only cases when `instancePath` is the same but errors end up at different nodes (like in the example in `1.`) are when `params` is either `missingProperty`, `additionalProperty` or `propertyName`: see https://ajv.js.org/api.html#error-parameters .
 
 # Merging paths
 Consider these paths: `/a/b/c/`, `/a/b/d/e`, `/a/b/f`. Each of them specify nodes of the `b` node. (Here are some more examples with array items: `/a/0/b`, `/a/0/c/d`, `/a/0/e`).
