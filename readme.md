@@ -67,8 +67,8 @@ But, are there cases where multiple validation errors are possible for one and t
     1. For type `object`:
         1. Both `minProperties` and `maxProperties` can be present together with the other keywords (but not one together with the other).
 
-# Multiple errors on the same path
-A case like this seems to be possible: `[
+## Multiple errors on the same path
+1. A case like this seems to be possible: `[
     {
         instancePath: '/obj',
         keyword: 'required',
@@ -89,6 +89,31 @@ A case like this seems to be possible: `[
         node: {a: {data: {keyword: 'maxProperties', ...}, ...}}
     }
 }`. This format could also handle multiple errors for a sigle `instancePath`.
+2. Another example, where multiple errors are on the same path and the `params` property doesn't offer additional level: `[
+{
+    instancePath: '/obj',
+    keyword: 'format',
+    params: {format: string}
+},
+{
+    instancePath: '/obj',
+    keyword: 'maxProperties',
+    params: {limit: 2}
+}
+]`. Here, both errors are: `{
+    obj: {data: {keyword: 'format', ...}}
+}` and `{
+    obj: {data: {keyword: 'maxProperties', ...}}    
+}`. The format, suggested in `1.` would handle this in the following manner: `{
+    obj: {
+        errors: [
+            {data: {keyword: 'format', ...}},
+            {data: {keyword: 'maxProperties', ...}}
+        ],
+        node: null
+    }
+}`
+
 
 # Merging paths
 Consider these paths: `/a/b/c/`, `/a/b/d/e`, `/a/b/f`. Each of them specify nodes of the `b` node. (Here are some more examples with array items: `/a/0/b`, `/a/0/c/d`, `/a/0/e`).
