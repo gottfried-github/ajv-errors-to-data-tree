@@ -30,6 +30,12 @@
         }]
     }`
 
+# Invalid input handling in `toTree`
+What invalid input is `toTree` vulnerable to?
+    1. `instancePath` not conforming to the format of a path.
+    2. conflicting node specifications in `instancePath`s of different errors. For example, `/a/0/b`, `/a/c/d`: the `a` node according to the former must be an array, but according to the latter - an object.
+    3. 
+
 # JSON schema standard
 This code handles errors for the `draft-7` standard. For example, in the latest standard, there's no `additionalProperties` keyword, whereas it's present in the `draft-7` spec.
 
@@ -121,3 +127,26 @@ In the algorithm, I go through each of the paths and turn them into objects. So,
     c: {},
     d: {e: {}}
 }}}` - i.e., the merger of the two paths.
+## How `mergePath` works
+The `path` array represents a directed path: each item of the array represents a node and the order of the items represents the edges - edges exist between immediate sibling items in the direction from the first item to the last. So, the path can be treated as a branch of a tree: where the first node is the root node and the following nodes are it's descendants, single node for each level.
+It compares levels of `root` and `path`, in descending order: from the root level to the descendants. It merges the coinciding parts of `path` and `root` and attaches the remainder of `path`, if any, to `root`.
+
+<!-- If the branch in `path` is deeper than the corresponding branch in `root`, it will append the remainder of the branch from `path` to `root`. -->
+
+<!-- At each level, if a node from `path` exists in `root`, it proceeds to the next level on that branch `*1`; if the node doesn't exist, it appends it to the branch and proceeds to the next level. -->
+
+`\*1` possibly, attaching errors from the node in `path` to the one in `root`
+
+If a node in `path` is an array item, and the parent node in `root` exists and is not an array, `mergePath` will throw.
+
+<!-- At each level, if a node from `path` doesn't exist in `root`, it adds the node to `root` and proceeds to the next level via that node. -->
+
+<!-- It compares nodes at each of the levels in the given `root` and `path`:
+
+each item of the array is connected to the next one, in the direction from the first item to the last.
+
+it treats `path` array as a directed path of nodes. -->
+
+
+It treats the given `path` array as a directed path, in the descending order: the first node in the array is the root node, the second is it's child and so on. It iterates the `path` starting from the root node and .
+It parses the given `root` object starting at the root level.
