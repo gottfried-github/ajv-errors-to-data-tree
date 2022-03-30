@@ -1,5 +1,5 @@
 function toTree(errors) {
-    let fields = {}
+    let fields = {node: {}}
     for (const e of errors) {
         const nodeNames = e.instancePath.split('/').filter(v => !!v.length)
         let nodes = nodeNames.reduce((_nodes, name, i) => {
@@ -31,26 +31,32 @@ function nameToNode(name, data, isTerminal) {
         return {
             index: Number(name),
             node: isTerminal
-                ? {message: data.message || null, data: data}
-                : {}
+                ? {index: Number(name), errors: [{message: data.message || null, data: data}], node: null}
+                : {index: Number(name), errors: [], node: null}
         }
     } else {
         if (isTerminal) {
-            return {name: name, node: {message: data.message || null, data: data}}
+            return {name: name, node: {errors: [{message: data.message || null, data: data}], node: null}}
         } else {
-            return {name: name, node: {}}
+            return {name: name, node: {errors: [], node: null}}
         }
     }
 }
 
 function createArrayNodes(nodes) {
     for (const [i, node] of nodes.entries()) {
+        if (0 === i) continue
+        if (nodes[i-1].node.node) throw new Error("parent node.node must be null")
 
         if ('index' in node) {
-            if (0 === i) continue
-
-            nodes[i-1].node = []
+            nodes[i-1].node.node = []; continue
         }
+
+        if ('name' in node) {
+            nodes[i-1].node.node = {}; continue
+        }
+
+        throw new Error("node must contain either index or name")
     }
 
     return nodes
@@ -72,17 +78,18 @@ function mergePath(root, path) {
                 _root = _root.find(_node => node.index === _node.index).node; continue
             }
 
-            _root.push(node)
+            _root.push(node.node)
             _root = node.node
             continue
         }
 
-        if (node.name in _root) {
-            _root = _root[node.name]; continue
+        if (node.name in _root.node) {
+            console.log("mergePath, node.name in _root.node, node:", node)
+            _root = _root.node[node.name]; continue
         }
 
-        _root[node.name] = node.node
-        _root = _root[node.name]
+        _root.node[node.name] = node.node
+        _root = _root.node[node.name]
     }
 
     return root
