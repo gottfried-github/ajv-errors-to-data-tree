@@ -27,20 +27,13 @@ function toTree(errors) {
 }
 
 function nameToNode(name, data, isTerminal) {
-    if (!isNaN(Number(name))) {
-        return {
-            index: Number(name),
-            node: isTerminal
-                ? {index: Number(name), errors: [{message: data.message || null, data: data}], node: null}
-                : {index: Number(name), errors: [], node: null}
-        }
-    } else {
-        if (isTerminal) {
-            return {name: name, node: {errors: [{message: data.message || null, data: data}], node: null}}
-        } else {
-            return {name: name, node: {errors: [], node: null}}
-        }
-    }
+    return isTerminal
+        ? !isNaN(Number(name))
+            ? {index: Number(name), node: {index: Number(name), errors: [{message: data.message || null, data: data}], node: null}}
+            : {name: name, node: {errors: [{message: data.message || null, data: data}], node: null}}
+        : !isNaN(Number(name))
+            ? {index: Number(name), node: {index: Number(name), errors: [], node: null}}
+            : {name: name, node: {errors: [], node: null}}
 }
 
 function createArrayNodes(nodes) {
