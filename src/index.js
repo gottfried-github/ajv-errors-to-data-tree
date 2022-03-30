@@ -72,13 +72,13 @@ function mergePath(root, path) {
     for (const node of path) {
         console.log("mergePath - node, path, _root:", node, path, _root);
         if ('index' in node) {
-            if (!Array.isArray(_root)) throw new Error("an array item must fit into an array")
+            if (!Array.isArray(_root.node)) throw new Error("an array item must fit into an array")
 
-            if (_root.find(_node => node.index === _node.index)) {
-                _root = _root.find(_node => node.index === _node.index).node; continue
+            if (_root.node.find(_node => node.index === _node.index)) {
+                _root = _root.node.find(_node => node.index === _node.index); continue
             }
 
-            _root.push(node.node)
+            _root.node.push(node.node)
             _root = node.node
             continue
         }
