@@ -70,7 +70,8 @@ validate(badData)
 
 const errorsTree = toTree(validate.errors)
 
-// access errors following the structure of the data, e.g.: errorsTree.node.obj.node.num
+// access errors following the structure of the data
+const numErr = errorsTree.node.obj.node.num
 ```
 
 # More examples
