@@ -1,8 +1,8 @@
 # `Ajv` Errors to Data Tree
 Parse `ajv` validator produced errors into the structure of the validated data. I.e., parse the errors' `instancePath`s into a tree.
 Example:
+`instancePath`: **/a/b/c**
 ```javascript
-// an error with {instancePath: "/a/b/c"} produces this:
 {
     node: {
         a: {
