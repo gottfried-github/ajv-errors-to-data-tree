@@ -33,8 +33,10 @@
 # Invalid input handling in `toTree`
 What invalid input is `toTree` vulnerable to?
     1. `instancePath` not conforming to the format of a path.
+        1. If there's no slashes in the string, then it just will be treated as a single node.
+        2. More noteworthy is the case of `///`. This will result in node names being empty strings. This perhaps is something worth validating.
     2. conflicting node specifications in `instancePath`s of different errors. For example, `/a/0/b`, `/a/c/d`: the `a` node according to the former must be an array, but according to the latter - an object.
-    3.
+        Such case is handled by `mergePath`.
 
 # JSON schema standard
 This code handles errors for the `draft-7` standard. For example, in the latest standard, there's no `additionalProperties` keyword, whereas it's present in the `draft-7` spec.
@@ -146,4 +148,4 @@ it treats `path` array as a directed path of nodes. -->
 <!-- It treats the given `path` array as a directed path, in the descending order: the first node in the array is the root node, the second is it's child and so on. It iterates the `path` starting from the root node and .
 It parses the given `root` object starting at the root level. -->
 
-If a node in `path` is an array item, and the parent node in `root` exists and is not an array, `mergePath` will throw.
+If a node in `path` is an array item, and the parent node in `root` exists and is not an array, `mergePath` will throw. Such case is described in `Invalid input handling in toTree/2.`
