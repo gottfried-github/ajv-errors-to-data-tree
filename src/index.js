@@ -65,6 +65,8 @@ function mergePath(root, path) {
 
     for (const node of path) {
         console.log("mergePath - node, path, _root:", node, path, _root);
+
+        if (null === _root.node) _root.node = 'index' in node ? [] : {}
         if ('index' in node) {
             // see 2. in Invalid input handling in `toTree`
             if (!Array.isArray(_root.node)) throw new Error("the parent of an array node must be an array")

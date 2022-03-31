@@ -204,6 +204,33 @@ function samePathErrorsWithArrItems() {
 
 function multipleLevelsErrors() {
     // /a/b, /a/b/c
+
+    const errors = [
+        {instancePath: '/a/b'},
+        {instancePath: '/a/b/c'}
+    ]
+
+    const tree  = toTree(errors)
+    console.log("multipleLevelsErrors, tree", tree);
+
+    // tree should be:
+    // {
+    //     node: {
+    //         a: {
+    //             errors: [], node: {
+    //                 b: {
+    //                     errors: [{instancePath: '/a/b'}], node: {
+    //                         c: {
+    //                             errors: [{instancePath: '/a/b/c'}], node: null
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+
+    return tree
 }
 
 function conflictingNodes() {
@@ -215,5 +242,8 @@ function emptyNodeName() {
 }
 
 module.exports = {
-    mergePathsOfNamedNodes, mergePathsWithArrItem, mergePathsWithArrItems, paramsToTree
+    mergePathsOfNamedNodes, mergePathsWithArrItem, mergePathsWithArrItems,
+    paramsToTree,
+    samePathErrors, samePathErrorsWithArrItems,
+    multipleLevelsErrors,
 }
