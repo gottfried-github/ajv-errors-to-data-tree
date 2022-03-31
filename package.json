@@ -16,7 +16,7 @@
     "javascript",
     "js"
   ],
-  "author": "spti",
+  "author": "gottfried",
   "license": "MIT",
   "devDependencies": {
     "ajv": "^8.11.0"
