@@ -65,7 +65,8 @@ function mergePath(root, path) {
     for (const node of path) {
         console.log("mergePath - node, path, _root:", node, path, _root);
         if ('index' in node) {
-            if (!Array.isArray(_root.node)) throw new Error("an array item must fit into an array")
+            // see 2. in Invalid input handling in `toTree`
+            if (!Array.isArray(_root.node)) throw new Error("the parent of an array node must be an array")
 
             if (_root.node.find(_node => node.index === _node.index)) {
                 _root = _root.node.find(_node => node.index === _node.index); continue
