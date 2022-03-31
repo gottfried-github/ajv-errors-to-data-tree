@@ -21,10 +21,12 @@ Example:
     }
 }
 ```
-See more examples.
+See [more examples](#more-examples).
+
+## JSONSchema standard
+This package handles errors, generated for the [`draft-7` jsonschema spec](https://datatracker.ietf.org/doc/html/draft-handrews-json-schema-validation-01), which is the [default in `ajv`](https://ajv.js.org/guide/schema-language.html#draft-07-and-draft-06).
 
 # Usage
-
 ## Install
 ```bash
 npm i --save ajv ajv-errors-to-data-tree
@@ -116,7 +118,7 @@ demo: `mergePathsOfNamedNodes`
 demo: `mergePathsWithArrItems`
 
 ## Some of the keywords for the object type
-The errors for the `required`, `additionalProperty` and `propertyNames` keywords (among others) will have their `instancePath` set to the path of the instance that should(n't) contain the properties. But `toTree` will attach these errors to the nodes, corresponding to the properties themselves.
+The errors for the [`required`](https://datatracker.ietf.org/doc/html/draft-handrews-json-schema-validation-01#section-6.5.3), [`additionalProperties`](https://datatracker.ietf.org/doc/html/draft-handrews-json-schema-validation-01#section-6.5.6) and [`propertyNames`](https://datatracker.ietf.org/doc/html/draft-handrews-json-schema-validation-01#section-6.5.8) keywords (among others) will have their `instancePath` set to the path of the instance that should(n't) contain the properties. But `toTree` will attach these errors to the nodes, corresponding to the properties themselves.
 
 E.g., for errors:
 ```javascript
@@ -153,7 +155,7 @@ the result will be:
     }
 }
 ```
-`toTree` does this by using the `params` property in the errors, which specify the name of the property which violated the rule.
+`toTree` does this by using the [`params` property](https://ajv.js.org/api.html#error-parameters) in the errors, which specify the name of the property which violated the rule.
 demo: `paramsToTree`
 
 ## Multiple errors for the same path
