@@ -1,5 +1,5 @@
 function toTree(errors) {
-    let fields = {node: {}}
+    let fields = null
     for (const e of errors) {
         const nodeNames = e.instancePath.split('/').filter(v => !!v.length)
         let nodes = nodeNames.reduce((_nodes, name, i) => {
@@ -20,6 +20,7 @@ function toTree(errors) {
             return _nodes
         }, [])
 
+        if (!fields) fields = 'index' in nodes[0] ? {node: []} : {node: {}}
         fields = mergePath(fields, createArrayNodes(nodes))
     }
 
