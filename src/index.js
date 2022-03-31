@@ -69,8 +69,10 @@ function mergePath(root, path) {
             // see 2. in Invalid input handling in `toTree`
             if (!Array.isArray(_root.node)) throw new Error("the parent of an array node must be an array")
 
-            if (_root.node.find(_node => node.index === _node.index)) {
-                _root = _root.node.find(_node => node.index === _node.index); continue
+            const _node = _root.node.find(_node => node.index === _node.index)
+            if (_node) {
+                if (node.node.errors.length) _node.errors = [..._node.errors, ...node.node.errors]
+                _root = _node; continue
             }
 
             _root.node.push(node.node)
@@ -79,6 +81,7 @@ function mergePath(root, path) {
         }
 
         if (node.name in _root.node) {
+            if (node.node.errors.length) _root.node[node.name].errors = [..._root.node[node.name].errors, ...node.node.errors]
             console.log("mergePath, node.name in _root.node, node:", node)
             _root = _root.node[node.name]; continue
         }
