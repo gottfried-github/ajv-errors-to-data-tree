@@ -116,8 +116,25 @@ demo: `mergePathsOfNamedNodes`
 demo: `mergePathsWithArrItems`
 
 ## Some of the keywords for the object type
-**/a/b, /a/b/d**, where the */a/b* instance has a `required` keyword with the `c` property name (see demo for example of errors).
-This logic applies as well to the `additionalProperty` and the `propertyNames` keywords.
+The errors for the `required`, `additionalProperty` and `propertyNames` keywords (among others) will have their `instancePath` set to the path of the instance that should(n't) contain the properties. But `toTree` will attach these errors to the nodes, corresponding to the properties themselves.
+
+E.g., for errors:
+```javascript
+[
+    {
+        instancePath: "/a/b",
+        keyword: "required",
+        params: {
+            missingProperty: "c"
+        }
+    },
+    {
+        instancePath: "/a/b/d"
+    }
+]
+```
+
+the result will be:
 ```javascript
 {
     node: {
@@ -127,7 +144,7 @@ This logic applies as well to the `additionalProperty` and the `propertyNames` k
                 b: {
                     errors: [],
                     node: {
-                        c: {errors: [{instancePath: "/a/b", params: {missingProperty: "c"}, ...}], ...},
+                        c: {errors: [{instancePath: "/a/b", keyword: "required", params: {missingProperty: "c"}, ...}], ...},
                         d: {errors: [{instancePath: "/a/b/d"}, ...], ...}
                     }
                 }
@@ -136,6 +153,7 @@ This logic applies as well to the `additionalProperty` and the `propertyNames` k
     }
 }
 ```
+`toTree` does this by using the `params` property in the errors, which specify the name of the property which violated the rule.
 demo: `paramsToTree`
 
 ## Multiple errors for the same path
