@@ -70,7 +70,7 @@ const errorsTree = toTree(validate.errors)
 # More examples
 Demos of these examples can be found in `./demo/to-tree.js`
 ## Basic
-**/a/b/c, /a/b/d**
+`instancePath`s: **/a/b/c, /a/b/d**
 ```javascript
 {
     node: {
@@ -96,7 +96,7 @@ Demos of these examples can be found in `./demo/to-tree.js`
 demo: `mergePathsOfNamedNodes`
 
 ## With array items
-**/a/0/0/b, /a/0/0/c**
+`instancePath`s: **/a/0/0/b, /a/0/0/c**
 ```javascript
 {
     node: {
