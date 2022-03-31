@@ -1,5 +1,5 @@
 # `Ajv` Errors to Data Tree
-Parse `ajv` validator produced errors into the structure of the validated data. I.e., parse the error's `instancePath`s into a tree.
+Parse `ajv` validator produced errors into the structure of the validated data. I.e., parse the errors' `instancePath`s into a tree.
 Example:
 ```javascript
 // an error with {instancePath: "/a/b/c"} produces this:
@@ -21,7 +21,7 @@ Example:
     }
 }
 ```
-See [more examples](#more-examples).
+See [more examples](#More-examples).
 
 ## JSONSchema standard
 This package handles errors, generated for the [`draft-7` jsonschema spec](https://datatracker.ietf.org/doc/html/draft-handrews-json-schema-validation-01), which is the [default in `ajv`](https://ajv.js.org/guide/schema-language.html#draft-07-and-draft-06).
