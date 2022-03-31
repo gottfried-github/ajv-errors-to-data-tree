@@ -26,6 +26,12 @@ See [more examples](#More-examples).
 ## JSONSchema standard
 This package handles errors, generated for the [`draft-7` jsonschema spec](https://datatracker.ietf.org/doc/html/draft-handrews-json-schema-validation-01), which is the [default in `ajv`](https://ajv.js.org/guide/schema-language.html#draft-07-and-draft-06).
 
+## What it doesn't do
+I haven't actually tested it thoroughly, with real errors and all the possible keywords. What I did test it with is what's in the demos.
+
+## Contributing
+Improvement suggestions, issue reports, contributions are kindly welcome.
+
 # Usage
 ## Install
 ```bash
