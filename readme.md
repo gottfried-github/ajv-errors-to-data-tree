@@ -37,6 +37,7 @@ What invalid input is `toTree` vulnerable to?
         2. More noteworthy is the case of `///`. This will result in node names being empty strings. This perhaps is something worth validating.
     2. conflicting node specifications in `instancePath`s of different errors. For example, `/a/0/b`, `/a/c/d`: the `a` node according to the former must be an array, but according to the latter - an object.
         Such case is handled by `mergePath`.
+        1. A more mild case is when errors for different types for the same node are present. This indeed make the errors invalid, but `toTree` will simply push the errors to the `errors` array of the node.
 
 # JSON schema standard
 This code handles errors for the `draft-7` standard. For example, in the latest standard, there's no `additionalProperties` keyword, whereas it's present in the `draft-7` spec.
