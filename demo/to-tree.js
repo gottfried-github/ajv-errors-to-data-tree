@@ -233,8 +233,36 @@ function multipleLevelsErrors() {
     return tree
 }
 
-function conflictingNodes() {
-    // /a/b/c, /a/0/d; /a/0/c, /a/b/d
+function conflictingNodesA() {
+    // /a/b/c, /a/0/d
+
+    const errors = [
+        {instancePath: '/a/b/c'},
+        {instancePath: '/a/0/d'}
+    ]
+
+    try {
+        toTree(errors)
+    } catch(e) {
+        console.log("conflictingNodesA, toTree thrown - e:", e);
+        // e.message should be: "the parent of an array item node must be an array"
+    }
+}
+
+function conflictingNodesB() {
+    // /a/0/c, /a/b/d
+
+    const errors = [
+        {instancePath: '/a/0/c'},
+        {instancePath: '/a/b/d'}
+    ]
+
+    try {
+        toTree(errors)
+    } catch(e) {
+        console.log("conflictingNodesB, toTree thrown - e:", e);
+        // e.message should be: "the parent of a named node must be an object"
+    }
 }
 
 function emptyNodeName() {
@@ -246,4 +274,5 @@ module.exports = {
     paramsToTree,
     samePathErrors, samePathErrorsWithArrItems,
     multipleLevelsErrors,
+    conflictingNodesA, conflictingNodesB
 }

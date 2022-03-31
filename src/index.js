@@ -69,7 +69,7 @@ function mergePath(root, path) {
         if (null === _root.node) _root.node = 'index' in node ? [] : {}
         if ('index' in node) {
             // see 2. in Invalid input handling in `toTree`
-            if (!Array.isArray(_root.node)) throw new Error("the parent of an array node must be an array")
+            if (!Array.isArray(_root.node)) throw new Error("the parent of an array item node must be an array")
 
             const _node = _root.node.find(_node => node.index === _node.index)
             if (_node) {
@@ -81,6 +81,8 @@ function mergePath(root, path) {
             _root = node.node
             continue
         }
+
+        if (typeof _root.node !== "object" || Array.isArray(_root.node) || null === _root.node) throw new Error("the parent of a named node must be an object")
 
         if (node.name in _root.node) {
             if (node.node.errors.length) _root.node[node.name].errors = [..._root.node[node.name].errors, ...node.node.errors]
