@@ -1,33 +1,40 @@
 function toTree(errors) {
     let fields = null
     for (const e of errors) {
-        const nodeNames = e.instancePath.split('/').filter(v => !!v.length)
+        const nodeNames = e.instancePath.split('/')
+        
+        // leading slash produces an empty string when using String.split. E.g.,
+        // '/a/b/c'.split('/') is ['', 'a', 'b', 'c']
+        if (0 === nodeNames[0].length) nodeNames.splice(0, 1)
+
         let nodes = nodeNames.reduce((_nodes, name, i) => {
             const isTerminal = nodeNames.length-1 === i
             if (!isTerminal) {
-                _nodes.push(nameToNode(name, e, isTerminal))
+                _nodes.push(_nameToNode(name, e, isTerminal))
                 return _nodes
             }
 
             const prop = ['missingProperty', 'additionalProperty', 'propertyName'].find(k => e.params && k in e.params)
             if (!prop) {
-                _nodes.push(nameToNode(name, e, isTerminal))
+                _nodes.push(_nameToNode(name, e, isTerminal))
                 return _nodes
             }
 
-            _nodes.push(nameToNode(name, null, false))
-            _nodes.push(nameToNode(e.params[prop], e, true))
+            _nodes.push(_nameToNode(name, null, false))
+            _nodes.push(_nameToNode(e.params[prop], e, true))
             return _nodes
         }, [])
 
         if (!fields) fields = 'index' in nodes[0] ? {node: []} : {node: {}}
-        fields = mergePath(fields, createArrayNodes(nodes))
+        fields = _mergePath(fields, _createArrayNodes(nodes))
     }
 
     return fields
 }
 
-function nameToNode(name, data, isTerminal) {
+function _nameToNode(name, data, isTerminal) {
+    // see 1/2 in Invalid input handling in `toTree`
+    if (0 === name.length) throw new Error("node name must be non-empty")
     return isTerminal
         ? !isNaN(Number(name))
             ? {index: Number(name), node: {index: Number(name), errors: [{message: data.message || null, data: data}], node: null}}
@@ -37,7 +44,7 @@ function nameToNode(name, data, isTerminal) {
             : {name: name, node: {errors: [], node: null}}
 }
 
-function createArrayNodes(nodes) {
+function _createArrayNodes(nodes) {
     for (const [i, node] of nodes.entries()) {
         if (0 === i) continue
         if (nodes[i-1].node.node) throw new Error("parent node.node must be null")
@@ -60,7 +67,7 @@ function createArrayNodes(nodes) {
     @param {Object} root
     @param {Array} path in descending order (from ancsetors to descendants)
 */
-function mergePath(root, path) {
+function _mergePath(root, path) {
     let _root = root
 
     for (const node of path) {
@@ -99,5 +106,5 @@ function mergePath(root, path) {
 
 module.exports = {
     toTree,
-    mergePath,
+    _mergePath,
 }

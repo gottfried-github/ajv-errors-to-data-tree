@@ -267,6 +267,16 @@ function conflictingNodesB() {
 
 function emptyNodeName() {
     // ///, /a//c
+    const errors = [
+        {instancePath: '/a//c'}
+    ]
+
+    try {
+        toTree(errors)
+    } catch(e) {
+        console.log("emptyNodeName, toTree thrown - e:", e);
+        // e.message should be: "node name must be non-empty"
+    }
 }
 
 module.exports = {
@@ -274,5 +284,6 @@ module.exports = {
     paramsToTree,
     samePathErrors, samePathErrorsWithArrItems,
     multipleLevelsErrors,
-    conflictingNodesA, conflictingNodesB
+    conflictingNodesA, conflictingNodesB,
+    emptyNodeName
 }
