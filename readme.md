@@ -190,3 +190,12 @@ output:
 }
 ```
 demo: `samePathErrors`
+
+# Bad input handling
+Here are some examples of bad input that I could come up with (you can find demos in `./demo/to-tree.js`):
+1. `instancePath` bad format: the value not being formatted like a path.
+    If, for example, it doesn't contain slashes, than it simply be treated as a single node name. I don't do anything to handle such case.
+2. Contradictions in the errors data.
+    What if there's two errors for the same path, one with a keyword relating to the `number` type and another with a keyword, relating to the `string` type. `toTree` won't do anything about it, it will just push both errors to the same node.
+3. `instancePath` bad format: e.g., `///`, `/a//c`. This could result in node names being empty strings. `toTree` generates exception if this happens (**demo:** `conflictingNodesA`, `conflictingNodesB`).
+4. Conflicting node specifications in `instancePath`s of different errors. E.g., `/a/0/b`, `/a/c/d`: the `a` node according to the former must be an array, but according to the latter - an object. Such cases cause an exception in `toTree` (**demo:** `emptyNodeName`).
