@@ -74,6 +74,22 @@ const errorsTree = toTree(validate.errors)
 const numErr = errorsTree.node.obj.node.num
 ```
 
+## Customize Errors
+```javascript
+class CustomErrorFormat {
+    constructor(data) {
+        this.data = data
+    }
+}
+
+const customErrorsTree = toTree(validate.errors, (data) => {
+    return new CustomErrorFormat(data)
+})
+
+// returns true:
+customErrorsTree.node.obj.node.num.errors[0] instanceof CustomErrorFormat
+```
+
 # More examples
 Demos of these examples can be found in `./demo/to-tree.js`
 ## Basic
