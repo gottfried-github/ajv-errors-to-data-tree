@@ -1,6 +1,7 @@
 function _traverseTree(tree, traverseTree, cb) {
     // console.log("_traverseTree, tree:", tree);
-    if (!tree.node) return
+    if (null === tree.node) return
+    if ('object' !== typeof tree.node) throw new TypeError("tree.node must either be an array or an object")
 
     if (Array.isArray(tree.node)) {
         tree.node.forEach(node => {
