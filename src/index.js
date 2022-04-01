@@ -106,7 +106,7 @@ function _mergePath(root, path) {
     return root
 }
 
-module.exports = {
+export {
     toTree,
     _mergePath,
 }

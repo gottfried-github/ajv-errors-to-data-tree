@@ -3,6 +3,7 @@
   "version": "0.3.0",
   "description": "map ajv errors to a tree, resembling the validated data",
   "main": "src/index.js",
+  "type": "module",
   "scripts": {
     "test": "npm test"
   },

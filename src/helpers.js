@@ -31,4 +31,4 @@ function traverseTree(tree, cb) {
     return _traverseTree(tree, _traverseTree, cb)
 }
 
-module.exports = {traverseTree}
+export {traverseTree}
