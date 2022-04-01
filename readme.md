@@ -91,6 +91,7 @@ customErrorsTree.node.obj.node.num.errors[0] instanceof CustomErrorFormat
 ```
 
 ## Traverse Error Trees
+**WARNING: this is a prototype, might be buggy.**
 ```javascript
 import {traverseTree} from 'ajv-errors-to-data-tree/src/helpers.js'
 
