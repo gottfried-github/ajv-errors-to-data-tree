@@ -291,7 +291,6 @@ function customizeErrors() {
 
     class CustomErrorFormat {
         constructor(data) {
-            this.customErrorFormat = true
             this.data = data
         }
     }
