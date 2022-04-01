@@ -90,6 +90,16 @@ const customErrorsTree = toTree(validate.errors, (data) => {
 customErrorsTree.node.obj.node.num.errors[0] instanceof CustomErrorFormat
 ```
 
+## Traverse Error Trees
+```javascript
+import {traverseTree} from 'ajv-errors-to-data-tree/src/helpers.js'
+
+traverseTree(customErrorsTree, (e, node) => {
+    if (!(e instanceof CustomErrorFormat)) throw new TypeError("errors must inherit CustomErrorFormat")
+})
+```
+demo: `demoTraverseTree` in `./src/demo/helpers.js`
+
 # More examples
 Demos of these examples can be found in `./demo/to-tree.js`
 ## Basic
