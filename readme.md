@@ -27,7 +27,7 @@ See [more examples](#More-examples).
 This package handles errors, generated for the [`draft-7` jsonschema spec](https://datatracker.ietf.org/doc/html/draft-handrews-json-schema-validation-01), which is the [default in `ajv`](https://ajv.js.org/guide/schema-language.html#draft-07-and-draft-06).
 
 ## What it doesn't do
-I haven't actually tested it thoroughly, with real errors and all the possible keywords. What I did test it with is what's in the demos.
+I haven't actually tested it thoroughly, with real errors and all the possible keywords. What I did test it with is what's in the demos. Although, in parsing the tree it relies solely on the `instancePath` property.
 
 ## Contributing
 Improvement suggestions, issue reports, contributions are kindly welcome.
@@ -162,7 +162,8 @@ the result will be:
     }
 }
 ```
-`toTree` does this by using the [`params` property](https://ajv.js.org/api.html#error-parameters) in the errors, which specify the name of the property which violated the rule.
+`toTree` does this by using the [`params` property](https://ajv.js.org/api.html#error-parameters) in the errors, which specifies the name of the property which violated the rule.
+
 demo: `paramsToTree`
 
 ## Multiple errors for the same path
