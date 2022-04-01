@@ -1,4 +1,4 @@
-const {traverseTree} = require("../src/helpers.js")
+import {traverseTree} from "../src/helpers.js"
 
 function demoTraverseTree() {
     const tree = {
@@ -29,4 +29,4 @@ function demoTraverseTree() {
     // demo traverseTree - e, node: { v: '/1/d/f' } { errors: [ { v: '/1/d/f' } ], node: null }
 }
 
-module.exports = {demoTraverseTree}
+export {demoTraverseTree}

@@ -1,4 +1,4 @@
-const {toTree} = require('../src/index')
+import {toTree} from '../src/index.js'
 
 function mergePathsOfNamedNodes() {
     const errors = [
@@ -321,7 +321,7 @@ function customizeErrors() {
     return tree
 }
 
-module.exports = {
+export {
     mergePathsOfNamedNodes, mergePathsWithArrItem, mergePathsWithArrItems,
     paramsToTree,
     samePathErrors, samePathErrorsWithArrItems,
