@@ -279,11 +279,55 @@ function emptyNodeName() {
     }
 }
 
+function customizeErrors() {
+    const errors = [
+        {
+            instancePath: "/a/b/c"
+        },
+        {
+            instancePath: "/a/b/d"
+        }
+    ]
+
+    class CustomErrorFormat {
+        constructor(data) {
+            this.customErrorFormat = true
+            this.data = data
+        }
+    }
+
+    const tree = toTree(errors, (data) => {
+        return new CustomErrorFormat(data)
+    })
+
+    // tree should be
+    // {
+    //     node: {
+    //         a: {
+    //             errors: [],
+    //             node: {
+    //                 b: {
+    //                     erorrs: [],
+    //                     node: {
+    //                         c: {errors: [/*instance of CustomErrorFormat*/], node: null},
+    //                         d: {errors: [/*instance of CustomErrorFormat*/], node: null},
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+
+    console.log(tree)
+    return tree
+}
+
 module.exports = {
     mergePathsOfNamedNodes, mergePathsWithArrItem, mergePathsWithArrItems,
     paramsToTree,
     samePathErrors, samePathErrorsWithArrItems,
     multipleLevelsErrors,
     conflictingNodesA, conflictingNodesB,
-    emptyNodeName
+    emptyNodeName,
+    customizeErrors
 }

@@ -1,8 +1,10 @@
-function toTree(errors) {
+function toTree(errors, customizeError) {
+    if (customizeError && "function" !== typeof customizeError) throw new TypeError('customizeError must be a function')
+
     let fields = null
     for (const e of errors) {
         const nodeNames = e.instancePath.split('/')
-        
+
         // leading slash produces an empty string when using String.split. E.g.,
         // '/a/b/c'.split('/') is ['', 'a', 'b', 'c']
         if (0 === nodeNames[0].length) nodeNames.splice(0, 1)
@@ -10,18 +12,18 @@ function toTree(errors) {
         let nodes = nodeNames.reduce((_nodes, name, i) => {
             const isTerminal = nodeNames.length-1 === i
             if (!isTerminal) {
-                _nodes.push(_nameToNode(name, e, isTerminal))
+                _nodes.push(_nameToNode(name, e, isTerminal, customizeError))
                 return _nodes
             }
 
             const prop = ['missingProperty', 'additionalProperty', 'propertyName'].find(k => e.params && k in e.params)
             if (!prop) {
-                _nodes.push(_nameToNode(name, e, isTerminal))
+                _nodes.push(_nameToNode(name, e, isTerminal, customizeError))
                 return _nodes
             }
 
-            _nodes.push(_nameToNode(name, null, false))
-            _nodes.push(_nameToNode(e.params[prop], e, true))
+            _nodes.push(_nameToNode(name, null, false, customizeError))
+            _nodes.push(_nameToNode(e.params[prop], e, true, customizeError))
             return _nodes
         }, [])
 
@@ -32,13 +34,13 @@ function toTree(errors) {
     return fields
 }
 
-function _nameToNode(name, data, isTerminal) {
+function _nameToNode(name, data, isTerminal, customizeError) {
     // see 1/2 in Invalid input handling in `toTree`
     if (0 === name.length) throw new Error("node name must be non-empty")
     return isTerminal
         ? !isNaN(Number(name))
-            ? {index: Number(name), node: {index: Number(name), errors: [{message: data.message || null, data: data}], node: null}}
-            : {name: name, node: {errors: [{message: data.message || null, data: data}], node: null}}
+            ? {index: Number(name), node: {index: Number(name), errors: [customizeError ? customizeError(data) : {message: data.message || null, data: data}], node: null}}
+            : {name: name, node: {errors: [customizeError ? customizeError(data) : {message: data.message || null, data: data}], node: null}}
         : !isNaN(Number(name))
             ? {index: Number(name), node: {index: Number(name), errors: [], node: null}}
             : {name: name, node: {errors: [], node: null}}
