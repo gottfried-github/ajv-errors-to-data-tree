@@ -226,6 +226,36 @@ output:
 ```
 demo: `samePathErrors`
 
+## empty-string `instancePath`
+errors:
+```javascript
+[
+    {
+        instancePath: '',
+    },
+    {
+        instancePath: '',
+        keyword: 'required',
+        params: {
+            missingProperty: "a"
+        }
+    }
+]
+```
+
+output:
+```javascript
+{
+    errors: [{instancePath: ''}],
+    node: {
+        a: {
+            errors: [{instancePath: '', keyword: 'required', params: {missingProperty: 'a'}}]
+        }
+    }
+}
+```
+demo: `emptyInstancePathC`
+
 # Bad input handling
 Here are some examples of bad input that I could come up with (you can find demos in `./demo/to-tree.js`):
 1. `instancePath` bad format: the value not being formatted like a path.

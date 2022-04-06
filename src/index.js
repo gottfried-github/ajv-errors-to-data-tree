@@ -3,6 +3,24 @@ function toTree(errors, customizeError) {
 
     let fields = null
     for (const e of errors) {
+        if (0 === e.instancePath.length) {
+            const nodeTerminal = _handleParams(e, customizeError)
+            const _node = nodeTerminal
+                ? 'name' in nodeTerminal
+                    ? _nameToNode('name', null, false, customizeError)
+                    : _nameToNode('0', null, false, customizeError)
+                : _nameToNode('name', e, true, customizeError)
+
+            console.log('toTree, empty instancePath, _node:', _node)
+
+            const node = {name: null, node: _node.node}
+            const nodes = nodeTerminal ? [node, nodeTerminal] : [node]
+
+            if (!fields) fields = Array.isArray(node.node) ? {errors: [], node: []} : {errors: [], node: {}}
+            fields = _mergePath(fields, _createArrayNodes(nodes))
+            continue
+        }
+
         const nodeNames = e.instancePath.split('/')
 
         // leading slash produces an empty string when using String.split. E.g.,
@@ -12,26 +30,32 @@ function toTree(errors, customizeError) {
         let nodes = nodeNames.reduce((_nodes, name, i) => {
             const isTerminal = nodeNames.length-1 === i
             if (!isTerminal) {
-                _nodes.push(_nameToNode(name, e, isTerminal, customizeError))
-                return _nodes
+                _nodes.push(_nameToNode(name, e, isTerminal, customizeError)); return _nodes
             }
 
-            const prop = ['missingProperty', 'additionalProperty', 'propertyName'].find(k => e.params && k in e.params)
-            if (!prop) {
+            const nodeTerminal = _handleParams(e, customizeError)
+            if (!nodeTerminal) {
                 _nodes.push(_nameToNode(name, e, isTerminal, customizeError))
                 return _nodes
             }
 
             _nodes.push(_nameToNode(name, null, false, customizeError))
-            _nodes.push(_nameToNode(e.params[prop], e, true, customizeError))
+            _nodes.push(nodeTerminal)
             return _nodes
         }, [])
 
-        if (!fields) fields = 'index' in nodes[0] ? {node: []} : {node: {}}
+        if (!fields) fields = 'index' in nodes[0] ? {errors: [], node: []} : {errors: [], node: {}}
         fields = _mergePath(fields, _createArrayNodes(nodes))
     }
 
     return fields
+}
+
+function _handleParams(e, customizeError) {
+    const prop = ['missingProperty', 'additionalProperty', 'propertyName'].find(k => e.params && k in e.params)
+    return prop
+        ? _nameToNode(e.params[prop], e, true, customizeError)
+        : null
 }
 
 function _nameToNode(name, data, isTerminal, customizeError) {
@@ -56,6 +80,7 @@ function _createArrayNodes(nodes) {
         }
 
         if ('name' in node) {
+            if (null === node.name) throw new Error("node with name of null can only be the first node in the array")
             nodes[i-1].node.node = {}; continue
         }
 
@@ -72,7 +97,7 @@ function _createArrayNodes(nodes) {
 function _mergePath(root, path) {
     let _root = root
 
-    for (const node of path) {
+    for (const [i, node] of path.entries()) {
         console.log("mergePath - node, path, _root:", node, path, _root);
 
         if (null === _root.node) _root.node = 'index' in node ? [] : {}
@@ -92,6 +117,21 @@ function _mergePath(root, path) {
         }
 
         if (typeof _root.node !== "object" || Array.isArray(_root.node) || null === _root.node) throw new Error("the parent of a named node must be an object")
+
+        if (null === node.name) {
+            // this is unnecessary, since _createArrayNodes already does this check
+            // if (0 !== i) throw new Error("node with name of null can only be the first node in the array")
+
+            if (null === node.node.node) {
+                if (node.node.errors.length) _root.errors = [..._root.errors, ...node.node.errors]; continue
+            }
+
+            if (!Array.isArray(node.node.node) && 'object' !== typeof node.node.node) throw new Error("the node property must be either array or an object")
+            if (Array.isArray(node.node.node) && !Array.isArray(_root.node) || !Array.isArray(node.node.node) && Array.isArray(_root.node)) throw new Error("root node types don't coincide")
+
+            if (node.node.errors.length) _root.errors = [..._root.errors, ...node.node.errors]
+            continue
+        }
 
         if (node.name in _root.node) {
             if (node.node.errors.length) _root.node[node.name].errors = [..._root.node[node.name].errors, ...node.node.errors]
