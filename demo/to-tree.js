@@ -233,6 +233,16 @@ function multipleLevelsErrors() {
     return tree
 }
 
+function emptyInstancePathA() {
+    const errors = [
+        {instancePath: ''}
+    ]
+
+    const tree = toTree(errors)
+    console.log(tree)
+    return tree
+}
+
 function conflictingNodesA() {
     // /a/b/c, /a/0/d
 
@@ -326,6 +336,7 @@ export {
     paramsToTree,
     samePathErrors, samePathErrorsWithArrItems,
     multipleLevelsErrors,
+    emptyInstancePathA,
     conflictingNodesA, conflictingNodesB,
     emptyNodeName,
     customizeErrors
