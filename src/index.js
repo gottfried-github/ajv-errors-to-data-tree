@@ -12,18 +12,17 @@ function toTree(errors, customizeError) {
         let nodes = nodeNames.reduce((_nodes, name, i) => {
             const isTerminal = nodeNames.length-1 === i
             if (!isTerminal) {
-                _nodes.push(_nameToNode(name, e, isTerminal, customizeError))
-                return _nodes
+                _nodes.push(_nameToNode(name, e, isTerminal, customizeError)); return _nodes
             }
 
-            const prop = ['missingProperty', 'additionalProperty', 'propertyName'].find(k => e.params && k in e.params)
-            if (!prop) {
+            const nodeTerminal = _handleParams(e, customizeError)
+            if (!nodeTerminal) {
                 _nodes.push(_nameToNode(name, e, isTerminal, customizeError))
                 return _nodes
             }
 
             _nodes.push(_nameToNode(name, null, false, customizeError))
-            _nodes.push(_nameToNode(e.params[prop], e, true, customizeError))
+            _nodes.push(nodeTerminal)
             return _nodes
         }, [])
 
@@ -32,6 +31,13 @@ function toTree(errors, customizeError) {
     }
 
     return fields
+}
+
+function _handleParams(e, customizeError) {
+    const prop = ['missingProperty', 'additionalProperty', 'propertyName'].find(k => e.params && k in e.params)
+    return prop
+        ? _nameToNode(e.params[prop], e, true, customizeError)
+        : null
 }
 
 function _nameToNode(name, data, isTerminal, customizeError) {
