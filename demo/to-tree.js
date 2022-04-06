@@ -240,6 +240,70 @@ function emptyInstancePathA() {
 
     const tree = toTree(errors)
     console.log(tree)
+
+    // tree should be:
+    // {
+    //     errors: [{instancePath: ''}],
+    //     node: null
+    // }
+
+    return tree
+}
+
+function emptyInstancePathB() {
+    const errors = [
+        {
+            instancePath: '',
+            keyword: 'required',
+            params: {
+                missingProperty: "a"
+            }
+        }
+    ]
+
+    const tree = toTree(errors)
+    console.log(tree)
+
+    // tree should be:
+    // {
+    //     errors: [],
+    //     node: {
+    //         a: {
+    //             errors: [{instancePath: '', keyword: 'required', params: {missingProperty: 'a'}}]
+    //         }
+    //     }
+    // }
+
+    return tree
+}
+
+function emptyInstancePathC() {
+    const errors = [
+        {
+            instancePath: '',
+        },
+        {
+            instancePath: '',
+            keyword: 'required',
+            params: {
+                missingProperty: "a"
+            }
+        }
+    ]
+
+    const tree = toTree(errors)
+    console.log(tree)
+
+    // tree should be:
+    // {
+    //     errors: [{instancePath: ''}],
+    //     node: {
+    //         a: {
+    //             errors: [{instancePath: '', keyword: 'required', params: {missingProperty: 'a'}}]
+    //         }
+    //     }
+    // }
+
     return tree
 }
 
@@ -336,7 +400,7 @@ export {
     paramsToTree,
     samePathErrors, samePathErrorsWithArrItems,
     multipleLevelsErrors,
-    emptyInstancePathA,
+    emptyInstancePathA, emptyInstancePathB, emptyInstancePathC,
     conflictingNodesA, conflictingNodesB,
     emptyNodeName,
     customizeErrors
