@@ -97,6 +97,14 @@ import {traverseTree} from 'ajv-errors-to-data-tree/src/helpers.js'
 
 traverseTree(customErrorsTree, (e, fieldName, parentNode) => {
     if (!(e instanceof CustomErrorFormat)) throw new TypeError("errors must inherit CustomErrorFormat")
+
+    // remove the error from the tree, by returning null
+    if (!Object.keys(e.data).length) return null
+
+    // modify the error, by returning a non-undefined value
+    if (e.data.message) return {...e, message: e.data.message}
+
+    // else, keep the error unchanged
 })
 ```
 demo: `demoTraverseTree` in `./src/demo/helpers.js`

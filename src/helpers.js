@@ -15,10 +15,24 @@ function _traverseTree(tree, traverseTree, cb) {
     Object.keys(tree.node).forEach((k) => {
         // console.log("_traverseTree, tree.node."+k+", node:", tree.node[k]);
         if (tree.node[k].errors.length) {
-            tree.node[k].errors.forEach(e => {
-                if (cb) cb(e, k, tree.node)
-                // console.log("_traverseTree, tree.node."+k+", error:", e);
-            })
+            tree.node[k].errors = tree.node[k].errors.reduce((_errors, e, i) => {
+                if (!cb) {
+                    _errors.push(e); return _errors
+                }
+
+                const res = cb(e, k, tree.node)
+
+                if (undefined === res) {
+                    _errors.push(e); return _errors
+                }
+
+                if (null === res) {
+                    return _errors
+                }
+
+                _errors.push(res)
+                return _errors
+            }, [])
 
             return
         }
