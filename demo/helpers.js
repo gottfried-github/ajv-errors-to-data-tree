@@ -18,8 +18,8 @@ function demoTraverseTree() {
         ]
     }
 
-    traverseTree(tree, (e, node) => {
-        console.log("demo traverseTree - e, node:", e, node)
+    traverseTree(tree, (e, fieldName, parentNode) => {
+        console.log("demo traverseTree - e, fieldName, parentNode:", e, fieldName, parentNode)
     })
 
     // should log:
