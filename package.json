@@ -1,6 +1,6 @@
 {
   "name": "ajv-errors-to-data-tree",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "map ajv errors to a tree, resembling the validated data",
   "main": "src/index.js",
   "type": "module",
