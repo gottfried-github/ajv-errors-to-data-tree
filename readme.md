@@ -95,7 +95,7 @@ customErrorsTree.node.obj.node.num.errors[0] instanceof CustomErrorFormat
 ```javascript
 import {traverseTree} from 'ajv-errors-to-data-tree/src/helpers.js'
 
-traverseTree(customErrorsTree, (e, node) => {
+traverseTree(customErrorsTree, (e, fieldName, parentNode) => {
     if (!(e instanceof CustomErrorFormat)) throw new TypeError("errors must inherit CustomErrorFormat")
 })
 ```
