@@ -34,6 +34,9 @@ function _traverseTree(tree, traverseTree, cb) {
                 return _errors
             }, [])
 
+            // if node is terminal and it has no errors, remove it from the parent node
+            if (0 === tree.node[k].errors.length && !tree.node[k].node) delete tree.node[k]
+
             return
         }
 
