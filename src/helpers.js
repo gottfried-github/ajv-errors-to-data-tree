@@ -49,4 +49,38 @@ function traverseTree(tree, cb) {
     return _traverseTree(tree, _traverseTree, cb)
 }
 
-export {traverseTree}
+function _mergeErrors(target, source, mergeErrors) {
+    if (null === source.node) return
+    if ('object' !== typeof target.node || 'object' !== typeof source.node) throw new TypeError("tree.node must either be an array or an object")
+
+    if (!(!(Array.isArray(target.node) && Array.isArray(source.node)) || (Array.isArray(target.node) && Array.isArray(source.node)))) throw new Error("node types don't match")
+
+    if (source.errors.length) target.errors = [...target.errors, ...source.errors]
+
+    if (Array.isArray(target.node)) {
+        if (target.node.length !== source.node.length) throw new Error("array nodes length doesn't match")
+
+        target.node.forEach((node, i) => {
+            // console.log("_traverseTree, tree.node["+node.index+"], node:", node);
+            mergeErrors(node, source.node[i], mergeErrors)
+        })
+
+        return
+    }
+
+    Object.keys(source.node).forEach(k => {
+        // console.log("_mergeErrors: source.node k, target.node:", k, target.node);
+        if (!(k in target.node)) target.node[k] = {errors: [], node: null}
+        // console.log("_mergeErrors, source.node k - target.node:", target.node);
+
+        target.node[k].errors.push(...source.node[k].errors)
+
+        mergeErrors(target.node[k], source.node[k], mergeErrors)
+    })
+}
+
+function mergeErrors(target, source) {
+    return _mergeErrors(target, source, _mergeErrors)
+}
+
+export {traverseTree, mergeErrors}
