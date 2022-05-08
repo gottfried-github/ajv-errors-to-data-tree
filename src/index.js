@@ -11,7 +11,7 @@ function toTree(errors, customizeError) {
                     : _nameToNode('0', null, false, customizeError)
                 : _nameToNode('name', e, true, customizeError)
 
-            console.log('toTree, empty instancePath, _node:', _node)
+            // console.log('toTree, empty instancePath, _node:', _node)
 
             const node = {name: null, node: _node.node}
             const nodes = nodeTerminal ? [node, nodeTerminal] : [node]
@@ -98,7 +98,7 @@ function _mergePath(root, path) {
     let _root = root
 
     for (const [i, node] of path.entries()) {
-        console.log("mergePath - node, path, _root:", node, path, _root);
+        // console.log("mergePath - node, path, _root:", node, path, _root);
 
         if (null === _root.node) _root.node = 'index' in node ? [] : {}
         if ('index' in node) {
@@ -135,7 +135,7 @@ function _mergePath(root, path) {
 
         if (node.name in _root.node) {
             if (node.node.errors.length) _root.node[node.name].errors = [..._root.node[node.name].errors, ...node.node.errors]
-            console.log("mergePath, node.name in _root.node, node:", node)
+            // console.log("mergePath, node.name in _root.node, node:", node)
             _root = _root.node[node.name]; continue
         }
 

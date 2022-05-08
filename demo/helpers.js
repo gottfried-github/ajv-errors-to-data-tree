@@ -1,4 +1,4 @@
-import {traverseTree} from "../src/helpers.js"
+import {traverseTree, mergeErrors} from "../src/helpers.js"
 
 function demoTraverseTree() {
     const tree = {
@@ -73,4 +73,28 @@ function modifyErrors() {
     // i.e., `/a` is modified, `/b` is removed, `/c` is unchanged
 }
 
-export {demoTraverseTree, modifyErrors}
+function mergeErrorsDemo() {
+    const a = {errors: ['a, root'], node: {a: {errors: ['a, a'], node: null}}}
+    const b = {errors: ['b, root'], node: {a: {errors: ['b, a', 'b, b'], node: null}, b: {errors: ['b, b'], node: null}}}
+
+    mergeErrors(a, b)
+
+    console.log(JSON.stringify(a, null, 2))
+
+    // a should be:
+    // {
+    //     errors: ['a, root', 'b, root'],
+    //     node: {
+    //         a: {
+    //             errors: ['a, a', 'b, a', 'b, b'],
+    //             node: null
+    //         },
+    //         b: {
+    //             errors: ['b, b'],
+    //             node: null
+    //         }
+    //     }
+    // }
+}
+
+export {demoTraverseTree, modifyErrors, mergeErrorsDemo}
